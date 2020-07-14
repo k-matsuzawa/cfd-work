@@ -1,0 +1,19 @@
+[package]
+name = "cfd-rust"
+version = "0.0.1"
+authors = ["tech@cryptogarage.co.jp"]
+license = "MIT"
+readme = "README.md"
+keywords = ["build-dependencies"]
+description = """
+A build dependency for running `cmake` to build a native library
+"""
+categories = ["development-tools::build-utils"]
+build="build.rs"
+
+[dependencies]
+libc = "0.2.66"
+ferris-says = "0.1"
+
+[build-dependencies]
+cmake = "0.1.31"
