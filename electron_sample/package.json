@@ -1,0 +1,21 @@
+{
+  "name": "electron_sample",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron main.js",
+    "package-win": "node ./build-win.js",
+    "package-linux": "node ./build-linux.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cfd-js": "github:cryptogarageinc/cfd-js#v0.1.10"
+  },
+  "devDependencies": {
+    "electron": "^8.4.0",
+    "electron-builder": "^22.7.0"
+  }
+}
