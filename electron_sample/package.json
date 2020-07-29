@@ -6,7 +6,8 @@
   "scripts": {
     "start": "electron main.js",
     "package-win": "node ./build-win.js",
-    "package-linux": "node ./build-linux.js",
+    "package-linux": "electron-builder --linux AppImage",
+    "package-linux-snap": "electron-builder --linux snap",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
