@@ -1,9 +1,9 @@
 extern crate bitcoin;
-extern crate cfdrust;
+extern crate cfd_rust;
 extern crate hex;
 extern crate secp256k1;
 
-use self::cfdrust as cfd;
+use self::cfd_rust as cfd;
 // use alloc::string::ToString;
 
 fn main() {
