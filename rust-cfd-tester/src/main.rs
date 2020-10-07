@@ -1,48 +1,92 @@
 extern crate bitcoin;
 extern crate cfd_rust;
+extern crate clap;
 extern crate hex;
 extern crate secp256k1;
+extern crate json;
 
 use self::cfd_rust as cfd;
-// use alloc::string::ToString;
+
+use cfd::{decode_raw_transaction, Network};
+use clap::{App, Arg, ArgMatches, SubCommand};
+use std::fs;
+
+const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 fn main() {
-  let prvikey_cfd_ret = cfd::Privkey::generate(&cfd::Network::Mainnet, true);
-  if let Err(e) = prvikey_cfd_ret {
-    println!("Err: {}", e);
+  let network_arg = Arg::with_name("network")
+    .help("network option")
+    .short("n")
+    .long("network")
+    .takes_value(true);
+  let tx_arg = Arg::with_name("tx")
+    .help("transaction hex")
+    .short("t")
+    .long("tx")
+    .takes_value(true);
+  let file_arg = Arg::with_name("file")
+  .help("transaction hex file")
+  .short("f")
+  .long("file")
+  .takes_value(true);
+
+  let app = App::new("cfd_tester")
+    .about("cfd test CLI")
+    .version(VERSION)
+    .subcommand(
+      SubCommand::with_name("decoderawtransaction")
+        .about("decde raw transaction data.")
+        .arg(tx_arg.clone())
+        .arg(file_arg.clone())
+        .arg(network_arg.clone()),
+    );
+
+  let matches = app.get_matches();
+
+  if let Some(ref matches) = matches.subcommand_matches("decoderawtransaction") {
+    decode(matches);
     return;
   }
-  let prvikey_cfd = prvikey_cfd_ret.unwrap();
+}
 
-  let sec_key_ret = secp256k1::key::SecretKey::from_slice(prvikey_cfd.to_slice());
-  if let Err(e) = sec_key_ret {
-    println!("Err: {}", e);
-    return;
+fn get_network(matches: &ArgMatches) -> Network {
+  let mut network_type = Network::Mainnet;
+  if let Some(network) = matches.value_of("network") {
+    network_type = match network {
+      "mainnet" => Network::Mainnet,
+      "testnet" => Network::Testnet,
+      "regtest" => Network::Regtest,
+      "liquidv1" => Network::LiquidV1,
+      "elementsregtest" => Network::ElementsRegtest,
+      _ => Network::Mainnet,
+    };
   }
-  let sec_key = sec_key_ret.unwrap();
+  network_type
+}
 
-  let privkey_btc = bitcoin::PrivateKey {
-    compressed: true,
-    network: bitcoin::Network::Bitcoin,
-    key: sec_key,
-  };
-  let wif_btc = privkey_btc.to_wif();
-  let wif_cfd = prvikey_cfd.to_wif();
-  println!("wif(btc)   : {}", wif_btc);
-  println!("wif(cfd)   : {}", wif_cfd);
-
-  let secp = secp256k1::Secp256k1::new();
-  let pubkey_btc = privkey_btc.public_key(&secp);
-  let pubkey_btc_str = hex::encode(&pubkey_btc.to_bytes());
-
-  let pubkey_cfd_ret = prvikey_cfd.get_pubkey();
-  if let Err(e) = pubkey_cfd_ret {
-    println!("Err: {}", e);
-    return;
+fn get_tx(matches: &ArgMatches) -> String {
+  let tx;
+  if let Some(hex) = matches.value_of("tx") {
+    tx = hex.to_string();
+  } else if let Some(file) = matches.value_of("file") {
+    tx = fs::read_to_string(file).expect("Failed to read file.");
+  } else {
+    eprintln!("error: require tx or file.");
+    panic!("error: require tx or file.");
   }
-  let pubkey_cfd = pubkey_cfd_ret.unwrap();
+  tx
+}
 
-  println!("pubkey(btc): {}", pubkey_btc_str);
-  println!("pubkey(cfd): {}", pubkey_cfd.to_hex());
-  println!("pubkey(btc): {}", pubkey_btc.to_string());
+fn decode(matches: &ArgMatches) {
+  let network_type = get_network(matches);
+  let tx = get_tx(matches);
+  let dec_tx_ret = decode_raw_transaction(&network_type, tx.trim());
+  match dec_tx_ret {
+    Ok(dec_tx) => {
+      let json_obj = json::parse(&dec_tx).expect("Invalid json format.");
+      let json_str = json::stringify_pretty(json_obj, 2);
+      println!("tx: {}", json_str)
+    },
+    Err(e) => eprintln!("error: {}", e),
+  }
 }
