@@ -1,6 +1,6 @@
 {
   "name": "electron_sample",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "main.js",
   "scripts": {
@@ -13,11 +13,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cfd-js": "github:cryptogarageinc/cfd-js#v0.1.10"
+    "cfd-js": "github:cryptogarageinc/cfd-js#v0.2.5"
   },
   "devDependencies": {
     "bl": "^4.0.3",
-    "electron": "^8.4.0",
+    "electron": "^8.5.2",
     "electron-builder": "^22.7.0"
   }
 }
