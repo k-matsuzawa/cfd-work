@@ -16,7 +16,7 @@
     "cfd-js": "github:cryptogarageinc/cfd-js#v0.3.7"
   },
   "devDependencies": {
-    "electron": "^11.4.8",
+    "electron": "^11.5.0",
     "electron-builder": "^22.7.0"
   }
 }
