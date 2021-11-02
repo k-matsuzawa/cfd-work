@@ -13,10 +13,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cfd-js": "github:cryptogarageinc/cfd-js#v0.3.7"
+    "cfd-js": "github:cryptogarageinc/cfd-js#v0.3.10"
   },
   "devDependencies": {
     "electron": "^11.5.0",
-    "electron-builder": "^22.7.0"
+    "electron-builder": "^22.13.1"
   }
 }
