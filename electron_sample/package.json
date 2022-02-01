@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cfd-js": "github:cryptogarageinc/cfd-js#v0.3.10"
+    "cfd-js": "github:cryptogarageinc/cfd-js#v0.3.11"
   },
   "devDependencies": {
     "electron": "^11.5.0",
